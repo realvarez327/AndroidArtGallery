@@ -8,17 +8,15 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -30,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
@@ -103,77 +102,84 @@ fun ArtSpaceLayout( modifier: Modifier = Modifier) {
         authorPicId = R.drawable.beatrice_offor_in_her_studio
     ))
 
+    val width = (LocalConfiguration.current.screenWidthDp * 0.75)
 
     var currentArtIndex by remember { mutableStateOf(0) }
-    Column (
-        modifier = modifier.statusBarsPadding().padding(horizontal = 30.dp).width(340.dp).verticalScroll(rememberScrollState()).
-        safeDrawingPadding().background(color = colorResource(R.color.pink_80)),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+    Box(
+        modifier = modifier.fillMaxSize()
     ){
-        Image(
-            painter = painterResource(artworkList[currentArtIndex].imageResourceId),
-            contentDescription = "art img",
-            modifier = modifier.width(300.dp).align(Alignment.CenterHorizontally),
-            contentScale = ContentScale.FillWidth
-
-        )
-        Row (
-            horizontalArrangement = Arrangement.Center,
-            modifier = modifier.padding(bottom = 4.dp).align(Alignment.CenterHorizontally)
-
+        Column (
+            modifier = modifier.statusBarsPadding().width(width.dp).background(color = colorResource(R.color.pink_80)).align(
+                Alignment.Center),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ){
             Image(
-                painter = painterResource(artworkList[currentArtIndex].authorPicId),
-                contentDescription = "author image",
-                modifier = modifier.width(150.dp),
+                painter = painterResource(artworkList[currentArtIndex].imageResourceId),
+                contentDescription = "art img",
+                modifier = modifier.width((width*0.9).dp).align(Alignment.CenterHorizontally).padding(top = 16.dp),
                 contentScale = ContentScale.FillWidth
 
-
             )
-            Column(modifier = modifier.offset(x = 8.dp)) {
-                Text(
-                    text = "${artworkList[currentArtIndex].title} \nBy: ${artworkList[currentArtIndex].artist}"
-                )
-                Text(
-                    text = artworkList[currentArtIndex].year.toString(),
-                    fontStyle = FontStyle.Italic
-                )
-                Text(
-                    text = "Medium: ${artworkList[currentArtIndex].medium}",
-                    modifier = modifier.padding(end = 8.dp)
-                )
+            Row (
+                horizontalArrangement = Arrangement.Center,
+                modifier = modifier.padding(bottom = 4.dp, top = 4.dp).width((width*0.9).dp).align(Alignment.CenterHorizontally)
 
-            }
-        }
+            ){
+                Image(
+                    painter = painterResource(artworkList[currentArtIndex].authorPicId),
+                    contentDescription = "author image",
+                    modifier = modifier.width(150.dp),
+                    contentScale = ContentScale.FillWidth
 
-        Row {
 
-            Button(
-                onClick = {
-                    currentArtIndex--
-                    if (currentArtIndex<0){
-                        currentArtIndex = artworkList.size-1
-                    }
+                )
+                Column(modifier = modifier.offset(x = 8.dp)) {
+                    Text(
+                        text = "${artworkList[currentArtIndex].title} \nBy: ${artworkList[currentArtIndex].artist}"
+                    )
+                    Text(
+                        text = artworkList[currentArtIndex].year.toString(),
+                        fontStyle = FontStyle.Italic
+                    )
+                    Text(
+                        text = "Medium: ${artworkList[currentArtIndex].medium}",
+                        modifier = modifier.padding(end = 8.dp)
+                    )
+
                 }
-            ) {
-                Text(
-                    text = "Previous!"
-                )
             }
 
-            Button(
-                onClick = {
-                    currentArtIndex++
-                    if (currentArtIndex>= artworkList.size){
-                        currentArtIndex = 0
-                    }
-                }
-            ) {
-                Text(
-                    text = "Next!"
-                )
+            Row (
+                modifier = modifier.padding(bottom = 4.dp)
+            ){
 
+                Button(
+                    onClick = {
+                        currentArtIndex--
+                        if (currentArtIndex<0){
+                            currentArtIndex = artworkList.size-1
+                        }
+                    }
+                ) {
+                    Text(
+                        text = "Previous!"
+                    )
+                }
+
+                Button(
+                    onClick = {
+                        currentArtIndex++
+                        if (currentArtIndex>= artworkList.size){
+                            currentArtIndex = 0
+                        }
+                    }
+                ) {
+                    Text(
+                        text = "Next!"
+                    )
+
+                }
             }
         }
     }
